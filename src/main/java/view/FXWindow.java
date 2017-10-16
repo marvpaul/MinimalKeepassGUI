@@ -3,6 +3,7 @@ package view;
 import javafx.collections.FXCollections;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
@@ -107,6 +108,13 @@ public class FXWindow {
         accept.setOnAction(event -> {
             databaseModel.applyPass(passwordField.getText());
             secondStage.close();
+        });
+
+        passwordField.setOnKeyPressed(event -> {
+            if(event.getCode() == KeyCode.ENTER){
+                databaseModel.applyPass(passwordField.getText());
+                secondStage.close();
+            }
         });
 
     }
