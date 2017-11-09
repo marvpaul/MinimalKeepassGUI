@@ -1,3 +1,4 @@
 Manifest-Version: 1.0
-Main-Class: Main
+MyMain-Class: MyMain
+Main-Class: MyMain
 

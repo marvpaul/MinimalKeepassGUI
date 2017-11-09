@@ -7,7 +7,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.net.URL;
 
-public class Main extends Application {
+public class MyMain extends Application {
     FXWindow window;
 
     //Start point :)
