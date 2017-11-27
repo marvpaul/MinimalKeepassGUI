@@ -3,18 +3,22 @@ package model;
 import org.linguafranca.pwdb.Database;
 import org.linguafranca.pwdb.kdbx.KdbxCreds;
 import org.linguafranca.pwdb.kdbx.simple.SimpleDatabase;
+import org.linguafranca.pwdb.kdbx.simple.SimpleEntry;
+import org.linguafranca.pwdb.kdbx.simple.SimpleGroup;
 import view.FXWindow;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 public class DatabaseModel {
     //Here we store some data
     public Database database;
-    private List<String> entries;
+    private List<SimpleEntry> entries;
     private String path;
     private FXWindow view;
+    private List<SimpleGroup> groups;
 
     /**
      * Load a certain database
@@ -34,13 +38,14 @@ public class DatabaseModel {
      */
     public void searchInDatabase(String searchQuery){
         entries = database.findEntries(searchQuery);
+
     }
 
     /**
      * Getter :)
      * @return all the database entries
      */
-    public List<String> getEntries() {
+    public List<SimpleEntry> getEntries() {
         return entries;
     }
 

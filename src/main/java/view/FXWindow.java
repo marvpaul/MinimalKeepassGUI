@@ -9,9 +9,12 @@ import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import model.DatabaseModel;
+import model.ListEntry;
 import org.linguafranca.pwdb.Entry;
+import org.linguafranca.pwdb.kdbx.simple.SimpleEntry;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 public class FXWindow {
@@ -67,7 +70,7 @@ public class FXWindow {
         });
 
         listView.setOnMouseClicked(event -> {
-            String entry = listView.getSelectionModel().getSelectedItems().toString();
+            String entry = listView.getSelectionModel().getSelectedItem().toString();
             entry = entry.substring(entry.lastIndexOf("/")+1, entry.length()-1);
             Entry entr = (Entry)databaseModel.database.findEntries(entry).get(0);
             tA.setText(entr.getUsername() + " : " + entr.getPassword());
@@ -79,10 +82,18 @@ public class FXWindow {
      * Set the list for list view with entries from database
      * @param list a list with user entries
      */
-    public void setList(List<String> list){
-        listView.setItems(FXCollections.observableArrayList (list));
+    public void setList(List<SimpleEntry> list){
+        List<String> entriesToDisplay = new ArrayList<>();
+        for(int i = 0; i < list.size(); i++){
+                entriesToDisplay.add(list.get(i).getPath());
+        }
+        listView.setItems(FXCollections.observableArrayList (entriesToDisplay));
     }
 
+    /**
+     * Opens a dialogue and ask user for file path
+     * @return String with path to keepass file
+     */
     public String askForPath(){
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open Database");
@@ -91,6 +102,9 @@ public class FXWindow {
         return selectedFile.getAbsolutePath();
     }
 
+    /**
+     * Opens a dialogue where the user is asked for password
+     */
     public void askForPassword(){
         PasswordField passwordField = new PasswordField();
         passwordField.setPromptText("Your password");

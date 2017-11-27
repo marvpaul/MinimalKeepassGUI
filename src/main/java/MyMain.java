@@ -3,9 +3,7 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import view.FXWindow;
 
-import javax.swing.*;
 import java.awt.*;
-import java.net.URL;
 
 public class MyMain extends Application {
     FXWindow window;
