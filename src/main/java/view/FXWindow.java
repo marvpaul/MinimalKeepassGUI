@@ -9,7 +9,6 @@ import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import model.DatabaseModel;
-import model.ListEntry;
 import org.linguafranca.pwdb.Entry;
 import org.linguafranca.pwdb.kdbx.simple.SimpleEntry;
 
