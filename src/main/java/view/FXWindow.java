@@ -5,6 +5,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -22,6 +23,7 @@ public class FXWindow {
     public TextArea tA;
     public TextField tf;
     private Stage primStage;
+    private Button goDirUp;
 
     public FXWindow(Stage primaryStage) {
         primStage = primaryStage;
@@ -35,6 +37,10 @@ public class FXWindow {
         tf = new TextField();
         tf.getStyleClass().add("control-label");
 
+        goDirUp = new Button("Up");
+        HBox menuBar = new HBox();
+        menuBar.getChildren().add(goDirUp);
+
         listView = new ListView<>();
 
         setEvents();
@@ -46,7 +52,7 @@ public class FXWindow {
         BorderPane root = new BorderPane();
         root.setCenter(listView);
         root.setBottom(tA);
-        root.setTop(tf);
+        root.setTop(menuBar);
 
         Scene scene = new Scene(root, 500, 500);
 
@@ -65,15 +71,17 @@ public class FXWindow {
     private void setEvents(){
         tf.setOnKeyReleased(event -> {
             databaseModel.searchInDatabase(tf.getText());
-            setList(databaseModel.getEntries());
+            setList(databaseModel.stringList);
         });
 
         listView.setOnMouseClicked(event -> {
-            String entry = listView.getSelectionModel().getSelectedItem().toString();
-            entry = entry.substring(entry.lastIndexOf("/")+1, entry.length()-1);
-            Entry entr = (Entry)databaseModel.database.findEntries(entry).get(0);
-            tA.setText(entr.getUsername() + " : " + entr.getPassword());
-
+            Integer entry = listView.getSelectionModel().getSelectedIndices().get(0);
+            System.out.println(entry);
+            databaseModel.open(entry);
+        });
+        goDirUp.setOnMouseClicked(event -> {
+            System.out.println("Up");
+            databaseModel.goUp();
         });
     }
 
@@ -81,12 +89,12 @@ public class FXWindow {
      * Set the list for list view with entries from database
      * @param list a list with user entries
      */
-    public void setList(List<SimpleEntry> list){
-        List<String> entriesToDisplay = new ArrayList<>();
-        for(int i = 0; i < list.size(); i++){
-                entriesToDisplay.add(list.get(i).getPath());
-        }
-        listView.setItems(FXCollections.observableArrayList (entriesToDisplay));
+    public void setList(List<String> list){
+        listView.setItems(FXCollections.observableArrayList (list));
+    }
+
+    public void showEntry(SimpleEntry entry){
+        tA.setText(entry.getUsername() + " : " + entry.getPassword());
     }
 
     /**

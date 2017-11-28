@@ -16,13 +16,15 @@ public class DatabaseModel {
     //Here we store some data
     public Database database;
     private List<SimpleEntry> entries;
+    public List<String> stringList;
     private String path;
     private FXWindow view;
     private List<SimpleGroup> groups;
+    private SimpleGroup actualGroup;
+    private SimpleEntry actualEntry;
 
     /**
      * Load a certain database
-     * TODO: Add a dialogue to ask for file + password
      * @param view
      */
     public DatabaseModel(FXWindow view) {
@@ -38,7 +40,6 @@ public class DatabaseModel {
      */
     public void searchInDatabase(String searchQuery){
         entries = database.findEntries(searchQuery);
-
     }
 
     /**
@@ -66,10 +67,56 @@ public class DatabaseModel {
 
         openDatabase(path, pass);
 
-        //Just show all entries
-        searchInDatabase("");
+        openGroup((SimpleGroup)database.getRootGroup());
+
+        convertSelectionToStringList();
 
         //View should show the loaded entries
-        view.setList(getEntries());
+        view.setList(stringList);
     }
+
+    public void convertSelectionToStringList(){
+
+        stringList = new ArrayList<>();
+
+        for(SimpleGroup group : groups){
+            stringList.add(group.getName());
+        }
+
+        for(SimpleEntry entry : entries){
+            stringList.add(entry.getTitle());
+        }
+
+
+    }
+
+    public void open(int index){
+        if(groups.size() > index){
+            openGroup(groups.get(index));
+            convertSelectionToStringList();
+
+            //View should show the loaded entries
+            view.setList(stringList);
+        } else{
+            view.showEntry(entries.get(index-groups.size()));
+        }
+    }
+
+    public void goUp(){
+        openGroup(actualGroup.getParent());
+
+        convertSelectionToStringList();
+
+        view.setList(stringList);
+    }
+
+    public void openGroup(SimpleGroup groupToEnter){
+        //Just find all entries
+        entries = groupToEnter.getEntries();
+
+        groups = groupToEnter.getGroups();
+        actualGroup = groupToEnter;
+    }
+
+
 }
