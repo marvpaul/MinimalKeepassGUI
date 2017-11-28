@@ -3,13 +3,17 @@ package view;
 import javafx.collections.FXCollections;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 import model.DatabaseModel;
+import model.ViewEntry;
 import org.linguafranca.pwdb.Entry;
 import org.linguafranca.pwdb.kdbx.simple.SimpleEntry;
 
@@ -71,11 +75,11 @@ public class FXWindow {
     private void setEvents(){
         tf.setOnKeyReleased(event -> {
             databaseModel.searchInDatabase(tf.getText());
-            setList(databaseModel.stringList);
+            setList(databaseModel.viewEntries);
         });
 
         listView.setOnMouseClicked(event -> {
-            Integer entry = listView.getSelectionModel().getSelectedIndices().get(0);
+            Integer entry = listView.getSelectionModel().getSelectedIndex();
             databaseModel.open(entry);
         });
         goDirUp.setOnMouseClicked(event -> {
@@ -87,8 +91,44 @@ public class FXWindow {
      * Set the list for list view with entries from database
      * @param list a list with user entries
      */
-    public void setList(List<String> list){
-        listView.setItems(FXCollections.observableArrayList (list));
+    public void setList(List<ViewEntry> list){
+        List<String> entriesToShow = new ArrayList<>();
+        for(ViewEntry entry : list){
+            if(entry.isEntry()){
+                entriesToShow.add("F:" + entry.getEntry().getTitle());
+            } else{
+                entriesToShow.add("E:" + entry.getGroup().getName());
+            }
+        }
+
+        listView.setItems(FXCollections.observableArrayList(entriesToShow));
+        /*
+        List<ListViewItem> entriesToShow = new ArrayList<>();
+        for(ViewEntry entry : list){
+            if(entry.isEntry()){
+                entriesToShow.add(new ListViewItem(entry.getEntry().getTitle(), "https://adhoc.pressetext.com/img/icons/OpenFolder16.png"));
+            } else{
+                entriesToShow.add(new ListViewItem(entry.getGroup().getName(), "https://adhoc.pressetext.com/img/icons/OpenFolder16.png"));
+            }
+        }
+
+
+        listView.setItems(FXCollections.observableArrayList(entriesToShow));
+
+        // Custom cell factory
+        listView.setCellFactory(l -> new ListCell<>() {
+            @Override
+            public void updateItem(final ListViewItem item, final boolean empty) {
+                if (empty) {
+                    setText("");
+                    setGraphic(null);
+                } else {
+                    System.out.println(item.text);
+                    setText(item.text);
+                    setGraphic(item.image);
+                }
+            }
+        });*/
     }
 
     public void showEntry(SimpleEntry entry){

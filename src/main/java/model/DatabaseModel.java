@@ -16,7 +16,7 @@ public class DatabaseModel {
     //Here we store some data
     public Database database;
     private List<SimpleEntry> entries;
-    public List<String> stringList;
+    public List<ViewEntry> viewEntries;
     private String path;
     private FXWindow view;
     private List<SimpleGroup> groups;
@@ -69,22 +69,19 @@ public class DatabaseModel {
 
         openGroup((SimpleGroup)database.getRootGroup());
 
-        convertSelectionToStringList();
-
-        //View should show the loaded entries
-        view.setList(stringList);
+        applyListForView();
     }
 
-    public void convertSelectionToStringList(){
+    public void convertSelectionToViewEntries(){
 
-        stringList = new ArrayList<>();
+        viewEntries = new ArrayList<>();
 
         for(SimpleGroup group : groups){
-            stringList.add(group.getName());
+            viewEntries.add(new ViewEntry(group));
         }
 
         for(SimpleEntry entry : entries){
-            stringList.add(entry.getTitle());
+            viewEntries.add(new ViewEntry(entry));
         }
 
 
@@ -93,21 +90,23 @@ public class DatabaseModel {
     public void open(int index){
         if(groups.size() > index){
             openGroup(groups.get(index));
-            convertSelectionToStringList();
-
-            //View should show the loaded entries
-            view.setList(stringList);
+            applyListForView();
         } else{
             view.showEntry(entries.get(index-groups.size()));
         }
     }
 
+    private void applyListForView(){
+        convertSelectionToViewEntries();
+
+        //View should show the loaded entries
+        view.setList(viewEntries);
+    }
+
     public void goUp(){
         openGroup(actualGroup.getParent());
 
-        convertSelectionToStringList();
-
-        view.setList(stringList);
+        applyListForView();
     }
 
     public void openGroup(SimpleGroup groupToEnter){
