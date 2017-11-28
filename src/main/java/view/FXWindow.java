@@ -76,11 +76,9 @@ public class FXWindow {
 
         listView.setOnMouseClicked(event -> {
             Integer entry = listView.getSelectionModel().getSelectedIndices().get(0);
-            System.out.println(entry);
             databaseModel.open(entry);
         });
         goDirUp.setOnMouseClicked(event -> {
-            System.out.println("Up");
             databaseModel.goUp();
         });
     }
